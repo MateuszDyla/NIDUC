@@ -1,6 +1,10 @@
 function decodedVectors = tripleToBinary(sentVectors)
-%TRIPLETOBINARY Summary of this function goes here
-%   Detailed explanation goes here
+%TRIPLETOBINARY Dekoduje macierz wartości binarnych zakodowanych
+%potrojeniowo 
+%Iteruje co 3 bity, i następnie sumuje 3 następne bity po iteratorze. Jeśli
+%suma ta jest większa od 2, to znaczy, że prawdopodobnie przed zakodowaniem
+%był tam bit wysoki. W innym przypadku, prawdopodobnie znajdowało się tam
+%zero.
     decodedVectors = [];
     for vector = sentVectors.'
         newVector = [];

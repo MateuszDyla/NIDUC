@@ -10,10 +10,10 @@ codes = Code;
 userChoice = input("W jaki sposób chcesz wczytać dane do transmisji?\n [1] Z konsoli\n [2] Z pliku\nTwój wybór: ");
 
 if userChoice == 1
-    data = getDataFromConsole();
+    data = input("Podaj tekst do transmisji: \n", "s");
 elseif userChoice == 2
     file = uigetfile("*.txt", "Wybierz plik");
-    data = getDataFromFile(file);
+    data = fileread(file);
 else
     disp("\nZły wybór, możliwe opcje to [1], [2]")
 end

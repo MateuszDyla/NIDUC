@@ -1,6 +1,5 @@
 classdef Code
-    %CODE Summary of this class goes here
-    %   Detailed explanation goes here
+    %CODE Stałe będące identyfikatorami kodów
     
     properties
         TripleCode = 1

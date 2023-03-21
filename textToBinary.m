@@ -1,6 +1,5 @@
 function binaryData = textToBinary(textData)
-%TEXTTOBINARY Summary of this function goes here
-%   Detailed explanation goes here
+%TEXTTOBINARY Konwertuje każdy znak tekstu na blok wartości binarnych
     
 binaryData = logical(dec2bin(textData, 8) - '0');
 
