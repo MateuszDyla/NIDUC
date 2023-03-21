@@ -1,4 +1,3 @@
-import functions.*
 clear;
 
 %import stałych identyfikatorów kodów
