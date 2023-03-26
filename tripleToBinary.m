@@ -5,12 +5,17 @@ function decodedVectors = tripleToBinary(sentVectors)
 %suma ta jest większa od 2, to znaczy, że prawdopodobnie przed zakodowaniem
 %był tam bit wysoki. W innym przypadku, prawdopodobnie znajdowało się tam
 %zero.
-    decodedVectors = [];
-    for vector = sentVectors.'
-        newVector = [];
 
+%Prealokacja macierzy wyjściowej]
+    [ySize, xSize] = size(sentVectors);
+    decodedVectors = zeros(ySize, xSize/3);
+
+    j = 1;
+    while j <= ySize
         i = 1;
-        while i <= length(vector)
+        x = 1
+        vector = sentVectors(j,:);
+        while i < length(vector)
             highBits = sum(vector(i:i+2));
 
             if(highBits) >=2
@@ -18,10 +23,11 @@ function decodedVectors = tripleToBinary(sentVectors)
             else
                 bit = 0;
             end
-            newVector = [newVector, bit];
+            decodedVectors(j, x) = bit;
             i=i+3;
+            x = x + 1;
         end
-        decodedVectors = [decodedVectors; newVector];
+        j = j + 1;
     end
     
 end

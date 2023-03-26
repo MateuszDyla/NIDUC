@@ -22,25 +22,35 @@ initialVectors = textToBinary(data);
 
 %Wybór kodowania, kodowanie
 userChoice = input("Wybierz sposób kodowania danych\n [1] Kod potrojeniowy\n Twój wybór: ");
-
 if userChoice == 1 
     coding = codes.TripleCode;
     codedVectors = logical(binaryToTriple(initialVectors));
+elseif userChoice == 2
+    coding = codes.Hamming74;
+    codedVectors = logical(binaryToHamming(initialVectors));
 else
     return
 end
 
 
 %Przesyłanie przez kanał transmisyjny (binarny kanał symetryczny [BSC])
-sentData = bsc(codedVectors, 0.01);
+disp("Przesyłanie")
+sentData = bsc(codedVectors, 0.1);
 [errorNumber, errorPercentage] = biterr(codedVectors, sentData);
 
 
 %Dekodowanie
+disp("Dekodowanie")
 if coding == codes.TripleCode
-    decodedVectors = logical(tripleToBinary(sentData))
+    decodedVectors = logical(tripleToBinary(sentData));
+elseif coding == codes.Hamming74
+    decodedVectors = logical(hammingToBinary(sentData));
 end
 
-ber = biterr(initialVectors, decodedVectors);
+[ber, berPercent] = biterr(initialVectors, decodedVectors);
 
 %wyświetlenie zdekodowanej wiadomości i parametrów przesyłu wiadomości
+
+disp("Wyświetlanie wiadomosci:");
+decodedText = binaryToString(decodedVectors);
+disp(decodedText);

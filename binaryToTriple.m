@@ -5,6 +5,6 @@ function codedVectors = binaryToTriple(binaryVectors)
 codedVectors = []
 for vector = binaryVectors
     codedVector = repmat(vector, 1, 3);
-    codedVectors = [codedVectors, codedVector]
+    codedVectors = [codedVectors, codedVector];
 end
 
