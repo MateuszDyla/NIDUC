@@ -35,7 +35,7 @@ end
 
 %Przesyłanie przez kanał transmisyjny (binarny kanał symetryczny [BSC])
 disp("Przesyłanie")
-sentData = bsc(codedVectors, 0.1);
+sentData = bsc(codedVectors, 0.05);
 [errorNumber, errorPercentage] = biterr(codedVectors, sentData);
 
 

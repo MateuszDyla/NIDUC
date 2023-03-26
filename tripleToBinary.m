@@ -13,7 +13,7 @@ function decodedVectors = tripleToBinary(sentVectors)
     j = 1;
     while j <= ySize
         i = 1;
-        x = 1
+        x = 1;
         vector = sentVectors(j,:);
         while i < length(vector)
             highBits = sum(vector(i:i+2));
