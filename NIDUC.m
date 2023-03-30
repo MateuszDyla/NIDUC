@@ -21,6 +21,8 @@ initialVectors = textToBinary(data);
 
 
 %Wybór kodowania, kodowanie
+tic %start pomiaru czasu
+
 userChoice = input("Wybierz sposób kodowania danych\n [1] Kod potrojeniowy\n Twój wybór: ");
 if userChoice == 1 
     coding = codes.TripleCode;
@@ -36,7 +38,7 @@ end
 %Przesyłanie przez kanał transmisyjny (binarny kanał symetryczny [BSC])
 disp("Przesyłanie")
 sentData = bsc(codedVectors, 0.05);
-[errorNumber, errorPercentage] = biterr(codedVectors, sentData);
+[transmErrors, transmErrorsRatio] = biterr(codedVectors, sentData);
 
 
 %Dekodowanie
@@ -48,9 +50,15 @@ elseif coding == codes.Hamming74
 end
 
 [ber, berPercent] = biterr(initialVectors, decodedVectors);
+tStop = toc;
 
 %wyświetlenie zdekodowanej wiadomości i parametrów przesyłu wiadomości
 
 disp("Wyświetlanie wiadomosci:");
 decodedText = binaryToString(decodedVectors);
 disp(decodedText);
+
+disp("Statystyki:");
+disp("BER: " + ber)
+disp("Procentowo: " + berPercent*100 + "%");
+disp("Czas transmisji: " + tStop + "[s]");

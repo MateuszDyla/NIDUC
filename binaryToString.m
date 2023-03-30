@@ -1,13 +1,6 @@
 function text = binaryToString(binaryVectors)
-    text = "";
-    [ySize, xSize] = size(binaryVectors);
-    i = 1;
-    while i <= ySize
-        decVal = binaryVectorToDecimal(binaryVectors(i,:));
-        text = text + char(decVal);
-        i = i + 1;
-    end
-
-
+    
+    binaryVectors = double(binaryVectors);
+    text = char((bin2dec(num2str(binaryVectors))))';
 end
 
