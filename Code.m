@@ -3,7 +3,7 @@ classdef Code
     
     properties
         TripleCode = 1;
-        Hamming74 = 2;
+        Hamming = 2;
     end
 end
 

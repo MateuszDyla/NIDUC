@@ -28,32 +28,10 @@ if userChoice == 1
     coding = codes.TripleCode;
     codedVectors = logical(binaryToTriple(initialVectors));
 elseif userChoice == 2
-    coding = codes.Hamming74;
-    userChoiceH = input("Wybierz kod Hamminga\n [1] Hamming(7,4)\n [2] Hamming(15,11)\n [3] Hamming(31,26)\n [4] Hamming(63,57)\n [5] Hamming(127,120)\n [6] Hamming(255,247)\n [7] Hamming(511,502)\nTwój wybór: ");
-    if userChoiceH == 1
-    n=7;
-    k=4;
-    elseif userChoiceH == 2
-    n=15;
-    k=11;
-    elseif userChoiceH == 3
-    n=31;
-    k=26;
-    elseif userChoiceH == 4
-    n=63;
-    k=57;
-    elseif userChoiceH == 5
-    n=127;
-    k=120;
-    elseif userChoiceH == 6
-    n=255;
-    k=247;
-    elseif userChoiceH == 7
-    n=511;
-    k=502;
-    end
-        codedVectors = logical(binaryToHamming(initialVectors,n,k));
-    
+    coding = codes.Hamming;
+    n = input("Hamming(n,k)\n Podaj n: ");
+    k = input("Podaj k: ");
+    codedVectors = logical(binaryToHamming(initialVectors,n,k));
 else
     return
 end
@@ -69,7 +47,7 @@ sentData = bsc(codedVectors, 0.05);
 disp("Dekodowanie")
 if coding == codes.TripleCode
     decodedVectors = logical(tripleToBinary(sentData));
-elseif coding == codes.Hamming74
+elseif coding == codes.Hamming
     decodedVectors = logical(hammingToBinary(sentData,n,k));
 end
 
