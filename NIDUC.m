@@ -29,7 +29,7 @@ if userChoice == 1
     codedVectors = logical(binaryToTriple(initialVectors));
 elseif userChoice == 2
     coding = codes.Hamming;
-    n = input("Hamming(n,k)\n Podaj n: ");
+    n = input("Hamming(n,k)\n Podaj n: ");      %(7,4), (15,11), (31,26), (63,57), (127,120), (255,247), (511,502)
     k = input("Podaj k: ");
     codedVectors = logical(binaryToHamming(initialVectors,n,k));
 else
@@ -39,7 +39,7 @@ end
 
 %Przesyłanie przez kanał transmisyjny (binarny kanał symetryczny [BSC])
 disp("Przesyłanie")
-sentData = bsc(codedVectors, 0.05);
+sentData = bsc(codedVectors, 0.001);
 [transmErrors, transmErrorsRatio] = biterr(codedVectors, sentData);
 
 
@@ -49,18 +49,22 @@ if coding == codes.TripleCode
     decodedVectors = logical(tripleToBinary(sentData));
 elseif coding == codes.Hamming
     decodedVectors = logical(hammingToBinary(sentData,n,k));
+    decodedVectors = decodedVectors(1:length(initialVectors),:);
 end
 
 [ber, berPercent] = biterr(initialVectors, decodedVectors);
 tStop = toc;
-
+incorrectLetters=differentLetters(decodedVectors,initialVectors);
+percentIncorrectLetters = incorrectLetters/length(initialVectors);
 %wyświetlenie zdekodowanej wiadomości i parametrów przesyłu wiadomości
 
 disp("Wyświetlanie wiadomosci:");
 decodedText = binaryToString(decodedVectors);
 disp(decodedText);
-
+length(initialVectors);
 disp("Statystyki:");
 disp("BER: " + ber)
 disp("Procentowo: " + berPercent*100 + "%");
+disp("Błędne litery: " +incorrectLetters);
+disp("Procentowo: " + percentIncorrectLetters*100 + "%");
 disp("Czas transmisji: " + tStop + "[s]");
