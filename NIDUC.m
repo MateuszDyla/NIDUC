@@ -28,7 +28,7 @@ if userChoice == 1
     codedVectors = logical(binaryToTriple(initialVectors));
 elseif userChoice == 2
     coding = consts.Hamming;
-    n = input("Hamming(n,k)\n Podaj n: ");      %(7,4), (15,11), (31,26), (63,57), (127,120), (255,247), (511,502)
+    n = input("Hamming(n,k) (7,4), (15,11), (31,26), (63,57), (127,120), (255,247), (511,502)\n Podaj n: ");
     k = input("Podaj k: ");
     codedVectors = logical(binaryToHamming(initialVectors,n,k));
 else
@@ -62,7 +62,7 @@ end
 [ber, berPercent] = biterr(initialVectors, decodedVectors);
 %zniekształcone litery
 incorrectLetters=differentLetters(decodedVectors,initialVectors);
-percentIncorrectLetters = incorrectLetters/length(initialVectors);
+percentIncorrectLetters = 100*incorrectLetters/length(initialVectors);
 %nadmiarowość w procentach
 redundancy = 100*(height(codedVectors)*width(codedVectors))/(height(decodedVectors)*width(decodedVectors));
 %wyświetlenie zdekodowanej wiadomości i parametrów przesyłu wiadomości
@@ -75,5 +75,5 @@ disp("Statystyki:");
 disp("BER: " + ber)
 disp("Procentowo: " + berPercent*100 + "%");
 disp("Błędne litery: " +incorrectLetters);
-disp("Procentowo: " + percentIncorrectLetters*100 + "%");
+disp("Procentowo: " + percentIncorrectLetters + "%");
 disp("Nadmiarowość: " + redundancy + "%");
