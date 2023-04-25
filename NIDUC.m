@@ -67,7 +67,7 @@ elseif coding == consts.RS
 end
 
 %ber
-[ber, berPercent] = biterr(initialVectors, decodedVectors);
+[wrongBits, ber] = biterr(initialVectors, decodedVectors);
 %zniekształcone litery
 incorrectLetters=differentLetters(decodedVectors,initialVectors);
 percentIncorrectLetters = 100*incorrectLetters/length(initialVectors);
@@ -80,8 +80,8 @@ decodedText = binaryToString(decodedVectors);
 disp(decodedText);
 length(initialVectors);
 disp("Statystyki:");
-disp("BER: " + ber)
-disp("Procentowo: " + berPercent*100 + "%");
+disp("Przekłamane bity: " + wrongBits);
+disp("BER: " + ber*100 + "%")
 disp("Błędne litery: " +incorrectLetters);
 disp("Procentowo: " + percentIncorrectLetters + "%");
 disp("Nadmiarowość: " + redundancy + "%");
