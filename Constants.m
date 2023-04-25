@@ -4,6 +4,7 @@ classdef Constants
     properties
         TripleCode = 1;
         Hamming = 2;
+        RS=3;
     end
 end
 
