@@ -1,13 +1,14 @@
 clear;
 
-%import stałych identyfikatorów kodów
-consts = Constants;
+transmiter = FECTransmitter();
+code_param1=0;
+code_param2=0;
+channel_param1=0;
+channel_param2=0;
+channel_param3=0;
+channel_param4=0;
 
-
-%początek programu, zapytanie o sposób wczytania pliku, wczytanie pliku i
-%konwersja każdego znaku tekstu na blok binarny
 userChoice = input("W jaki sposób chcesz wczytać dane do transmisji?\n [1] Z konsoli\n [2] Z pliku\nTwój wybór: ");
-
 if userChoice == 1
     data = input("Podaj tekst do transmisji: \n", "s");
 elseif userChoice == 2
@@ -17,71 +18,38 @@ else
     disp("\nZły wybór, możliwe opcje to [1], [2]")
 end
 
-initialVectors = textToBinary(data);
-
-
-%Wybór kodowania, kodowanie
-
 userChoice = input("Wybierz sposób kodowania danych\n [1] Kod potrojeniowy\n [2] Kod Hamminga\n [3] Kod Reeda-Solomona\n Twój wybór: ");
 if userChoice == 1 
-    coding = consts.TripleCode;
-    codedVectors = logical(binaryToTriple(initialVectors));
+    coding = transmiter.TripleCode;
 elseif userChoice == 2
-    coding = consts.Hamming;
-    n = input("Hamming(n,k) (7,4), (15,11), (31,26), (63,57), (127,120), (255,247), (511,502)\n Podaj n: ");
-    k = input("Podaj k: ");
-    codedVectors = logical(binaryToHamming(initialVectors,n,k));
+    coding = transmiter.Hamming
+    code_param1 = input("Hamming(n,k) (7,4), (15,11), (31,26), (63,57), (127,120), (255,247), (511,502)\n Podaj n: ");
+    code_param2 = input("Podaj k: ");
 elseif userChoice == 3
-    coding = consts.RS;
-    n = input("RS\n Podaj n: ");     
-    m = input("Podaj m: ");
-    codedVectors = logical(binaryToRS(initialVectors,n,m));
-
+    coding = transmiter.RS;
+    code_param1 = input("RS\n Podaj n: ");     
+    code_param2 = input("Podaj m: ");
 else
     return
 end
 
 
-%Przesyłanie przez kanał transmisyjny (binarny kanał symetryczny [BSC], lub kanał Gilberta-Elliotta)
 disp("Przesyłanie")
 userChoice = input("Wybierz sposób przesyłu danych\n [1] Kanał BSC\n [2] Kanał Gilbera-Elliotta\n Twój wybór: ");
 
 if(userChoice == 1)
-    userChoice = input("Podaj prawdopodobienstwo przeklamania danych: ");
-    sentData = bsc(codedVectors, userChoice);
+    channel_param1 = input("Podaj prawdopodobienstwo przeklamania danych: ");
+    channel = transmiter.BSCChannel;
 elseif(userChoice == 2)
-    sentData = gilbert(codedVectors);
-end
-[transmErrors, transmErrorsRatio] = biterr(codedVectors, sentData);
-
-
-%Dekodowanie
-disp("Dekodowanie")
-if coding == consts.TripleCode
-    decodedVectors = logical(tripleToBinary(sentData));
-elseif coding == consts.Hamming
-    decodedVectors = logical(hammingToBinary(sentData,n,k));
-    decodedVectors = decodedVectors(1:length(initialVectors),:);
-elseif coding == consts.RS
-    decodedVectors = logical(RSToBinary(sentData,n,m));
+    channel = transmiter.GilbertElliott;
+    channel_param1 = input("Podaj prawdopodobienstwo przeklamania w stanie dobrym: ");
+    channel_param2 = input("Podaj prawdopodobienstwo przeklamania w stanie złym: ");
+    channel_param3 = input("Podaj prawdopodobienstwo przejscia ze stanu dobrego do zlego: ");
+    channel_param4 = input("Podaj prawdopodobienstwo przejscia ze stanu zlego do dobrego: ");
 end
 
-%ber
-[wrongBits, ber] = biterr(initialVectors, decodedVectors);
-%zniekształcone litery
-incorrectLetters=differentLetters(decodedVectors,initialVectors);
-percentIncorrectLetters = 100*incorrectLetters/length(initialVectors);
-%nadmiarowość w procentach
-redundancy = 100*(height(codedVectors)*width(codedVectors))/(height(decodedVectors)*width(decodedVectors));
-%wyświetlenie zdekodowanej wiadomości i parametrów przesyłu wiadomości
 
-disp("Wyświetlanie wiadomosci:");
-decodedText = binaryToString(decodedVectors);
-disp(decodedText);
-length(initialVectors);
-disp("Statystyki:");
-disp("Przekłamane bity: " + wrongBits);
-disp("BER: " + ber*100 + "%")
-disp("Błędne litery: " +incorrectLetters);
-disp("Procentowo: " + percentIncorrectLetters + "%");
-disp("Nadmiarowość: " + redundancy + "%");
+
+transmiter.sendData(data, channel, [channel_param1, channel_param2, channel_param3, channel_param4], coding, [code_param1, code_param2]);
+transmiter.displayData();
+%transmiter.savedata(plik) - dobre do testowania
