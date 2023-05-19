@@ -18,7 +18,7 @@ else
     disp("\nZły wybór, możliwe opcje to [1], [2]")
 end
 
-userChoice = input("Wybierz sposób kodowania danych\n [1] Kod potrojeniowy\n [2] Kod Hamminga\n [3] Kod Reeda-Solomona\n Twój wybór: ");
+userChoice = input("Wybierz sposób kodowania danych\n [1] Kod potrojeniowy\n [2] Kod Hamminga\n [3] Kod Reeda-Solomona\n [4] Brak \n Twój wybór: ");
 if userChoice == 1 
     coding = transmiter.TripleCode;
 elseif userChoice == 2
@@ -29,6 +29,8 @@ elseif userChoice == 3
     coding = transmiter.RS;
     code_param1 = input("RS\n Podaj n: ");     
     code_param2 = input("Podaj m: ");
+elseif userChoice == 4;
+    coding = transmiter.noCode;
 else
     return
 end

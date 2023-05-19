@@ -6,10 +6,14 @@ classdef FECTransmitter < handle
         dataToSend;
         redundancy = 0;
         ber = 0;
+        gerrors;
+        gerrorsdist;
         wrongBits = 0;
         decodedText;
         incorrectLetters;
         percentIncorrectLetters;
+        channel_param;
+        channel;
     end
 
     properties(Constant)
@@ -17,6 +21,7 @@ classdef FECTransmitter < handle
         Hamming = "Hamming";
         BSCChannel = "BSC";
         RS = "RS";
+        noCode = "nocode";
         GilbertElliott = "Gilbert";
     end
     
@@ -31,40 +36,47 @@ classdef FECTransmitter < handle
         %code_param - parametry kodu, w tablicy, zgodnie z kolejnością
         %podawania parametrów do funkcji kodującej (np. [n, k] dla
         %Hamminga)
-        function obj = sendData(obj, data, channel, channel_param, code, code_param) 
-            obj.dataToSend = data;
-            binaryData = textToBinary(obj.dataToSend);
+        function obj = sendData(obj, binaryData, channel, channel_param, code, code_param) 
+            obj.channel_param = channel_param;
+            obj.channel = channel;
+%             obj.dataToSend = data;
             %kodowanie
-            if(code == obj.TripleCode)
-                codedData = binaryToTriple(binaryData);
-            elseif(code == obj.Hamming)
-                codedData = binaryToHamming(binaryData, code_param(1), code_param(2));
-            elseif(code == obj.RS)
-                codedData = binaryToRS(binaryData, code_param(1), code_param(2));
-            end
+%             if(code == obj.TripleCode)
+%                 codedData = binaryToTriple(binaryData);
+%             elseif(code == obj.Hamming)
+%                 codedData = binaryToHamming(binaryData, code_param(1), code_param(2));
+%             elseif(code == obj.RS)
+%                 codedData = binaryToRS(binaryData, code_param(1), code_param(2));
+%             elseif(code == obj.noCode)
+                codedData = binaryData;
+%             end
             
             %przesył danych przez wybrany kanał
-            if(channel == obj.BSCChannel)
-                sentData = bsc(codedData, channel_param(1));
-            elseif(channel == obj.GilbertElliott)
+%             if(channel == obj.BSCChannel)
+%                 sentData = bsc(codedData, channel_param(1));
+%             elseif(channel == obj.GilbertElliott)
                 sentData = gilbert(codedData, channel_param(1), channel_param(2), channel_param(3), channel_param(4));
-            end
+%             end
 
             %dekodowanie
-            if(code == obj.TripleCode)
-                decodedData = tripleToBinary(sentData);
-            elseif(code == obj.Hamming)
-                decodedData = hammingToBinary(sentData, code_param(1), code_param(2));
-            elseif(code == obj.RS)
-                decodedData=RSToBinary(sentData, code_param(1), code_param(2));
-            end
+%             if(code == obj.TripleCode)
+%                 decodedData = tripleToBinary(sentData);
+%             elseif(code == obj.Hamming)
+%                 decodedData = hammingToBinary(sentData, code_param(1), code_param(2));
+%             elseif(code == obj.RS)
+%                 decodedData=RSToBinary(sentData, code_param(1), code_param(2));
+%             elseif(code == obj.noCode)
+                decodedData = sentData;
+%             end
 
             %zapis statystyk
             [obj.wrongBits, obj.ber] = biterr(binaryData, decodedData);
-            obj.redundancy = 100*(height(codedData)*width(codedData))/(height(decodedData)*width(decodedData));
-            obj.decodedText = binaryToString(decodedData);
-            obj.incorrectLetters=differentLetters(decodedData,binaryData);
-            obj.percentIncorrectLetters = 100*obj.incorrectLetters/length(binaryData);
+%             obj.redundancy = 100*(height(codedData)*width(codedData))/(height(decodedData)*width(decodedData));
+%             obj.decodedText = binaryToString(decodedData);
+%             obj.incorrectLetters=differentLetters(decodedData,binaryData);
+%             obj.percentIncorrectLetters = 100*obj.incorrectLetters/length(binaryData);
+            [obj.gerrors, obj.gerrorsdist] = groupErrors(binaryData, decodedData);
+
         end
 
        function displayData(obj)
@@ -76,7 +88,17 @@ classdef FECTransmitter < handle
             disp("Błędne litery: " +obj.incorrectLetters);
             disp("Procentowo: " + obj.percentIncorrectLetters + "%");
             disp("Nadmiarowość: " + obj.redundancy + "%");
-        end
+       end
+
+       function saveData(obj)
+         
+           if exist("results.csv", "file") == 0
+               tytuly={"pg", "pb", "gtb" "btg", "ber", "grupowe"};
+               writecell(tytuly, "results.csv")
+           end
+           data = [obj.channel_param, obj.ber, obj.gerrors, obj.gerrorsdist];
+           writematrix(data, "results.csv", 'WriteMode', 'append')
+       end
     end
 end
 
