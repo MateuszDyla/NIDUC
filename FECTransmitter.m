@@ -41,31 +41,31 @@ classdef FECTransmitter < handle
             obj.channel = channel;
 %             obj.dataToSend = data;
             %kodowanie
-%             if(code == obj.TripleCode)
-%                 codedData = binaryToTriple(binaryData);
-%             elseif(code == obj.Hamming)
-%                 codedData = binaryToHamming(binaryData, code_param(1), code_param(2));
-%             elseif(code == obj.RS)
-%                 codedData = binaryToRS(binaryData, code_param(1), code_param(2));
-%             elseif(code == obj.noCode)
+            if(code == obj.TripleCode)
+                codedData = binaryToTriple(binaryData);
+            elseif(code == obj.Hamming)
+                codedData = binaryToHamming(binaryData, code_param(1), code_param(2));
+            elseif(code == obj.RS)
+                codedData = binaryToRS(binaryData, code_param(1), code_param(2));
+            elseif(code == obj.noCode)
                 codedData = binaryData;
-%             end
+            end
             
             %przesył danych przez wybrany kanał
-%             if(channel == obj.BSCChannel)
-%                 sentData = bsc(codedData, channel_param(1));
-%             elseif(channel == obj.GilbertElliott)
+            if(channel == obj.BSCChannel)
+                sentData = bsc(codedData, channel_param(1));
+            elseif(channel == obj.GilbertElliott)
                 sentData = gilbert(codedData, channel_param(1), channel_param(2), channel_param(3), channel_param(4));
-%             end
+            end
 
-            %dekodowanie
-%             if(code == obj.TripleCode)
-%                 decodedData = tripleToBinary(sentData);
-%             elseif(code == obj.Hamming)
-%                 decodedData = hammingToBinary(sentData, code_param(1), code_param(2));
-%             elseif(code == obj.RS)
-%                 decodedData=RSToBinary(sentData, code_param(1), code_param(2));
-%             elseif(code == obj.noCode)
+%             dekodowanie
+            if(code == obj.TripleCode)
+                decodedData = tripleToBinary(sentData);
+            elseif(code == obj.Hamming)
+                decodedData = hammingToBinary(sentData, code_param(1), code_param(2));
+            elseif(code == obj.RS)
+                decodedData=RSToBinary(sentData, code_param(1), code_param(2));
+            elseif(code == obj.noCode)
                 decodedData = sentData;
 %             end
 

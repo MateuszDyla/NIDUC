@@ -2,29 +2,21 @@ clear;
 transmiter = FECTransmitter();
 data = fileread("romeo.txt");
 binaryData = textToBinary(data);
-bers = zeros(1,100);
 
-% for i=1 : 1000
-%     transmiter.sendData(data, transmiter.BSCChannel, [0.1], transmiter.noCode, []);
-%     bers(i) = transmiter.ber;
-%     disp(i);
-%     transmiter.saveData();
-% end
-% c = 0;
-% pg = 0.0005:0.0005:0.01;
-% pb = 0.1:0.1:0.5;
-% gtb = 0.0005:0.0005:0.01;
-% btg = 0.005:0.005:0.1;
-% 
-% params = combvec(pg, pb, gtb, btg)';
-% for i = 1:width(params)
-%     transmiter.sendData(binaryData, transmiter.GilbertElliott, params(i,:), transmiter.noCode, []);
-%     transmiter.saveData();
-%     c=c+1;
-%     disp(c);
-% end
+c = 0;
+pg = 0.00001:0.00001:0.0001;
+pb = 0.05:0.05:0.5;
+gtb = 0.00005:0.00005:0.005;
+btg = 0.8:-0.1:0.1;
 
-% disp(max(bers));
+params = combvec(pg, pb, gtb, btg)'; %stworzenie wektorow z wszystkimi kombinacjami parametrow
+numParams = size(params, 1);
+parpool(); % Otwarcie puli wątków
 
-transmiter.sendData(binaryData, transmiter.GilbertElliott, [0.0005 0.001 ], transmiter.noCode, []);
+parfor i = 1:numParams
+    transmiter = FECTransmitter();
+    transmiter.sendData(binaryData, transmiter.GilbertElliott, params(i,:), transmiter.noCode, []);
+    transmiter.saveData();
+end
 
+delete(gcp); % Zamknięcie puli wątków
